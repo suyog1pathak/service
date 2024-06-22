@@ -190,8 +190,7 @@ go run cmd/run-services.go
 ...... output truncated ......
 
 
-❯ docker run -p 8080:8080 -it -e APP_DB_HOST=192.168.29.177 -e APP_DB_USER=root -e APP_DB_NAME=services -e APP_DB_PASSWORD=test123 -e GIN_MODE=release services:latest                                                               
-{"time":"2024-06-11T16:07:51.119074554Z","level":"INFO","msg":"starting server at","port":8080}
+❯ docker run -p 8080:8080 -it -e APP_DB_HOST=192.168.29.177 -e APP_DB_USER=root -e APP_DB_NAME=services -e APP_DB_PASSWORD=test123 -e GIN_MODE=release services:latest              
 {"time":"2024-06-11T16:07:51.119074554Z","level":"INFO","msg":"starting server at","port":8080}
 {"time":"2024-06-11T16:07:51.14275122Z","level":"INFO","msg":"please access swagger docs","path":"http://localhost:8080/docs/index.html"}
 ...... output truncated ......
