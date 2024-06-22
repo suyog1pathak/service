@@ -217,3 +217,6 @@ docker build -t service:latest .
  
  ❯ make docker-push
 ```
+
+### swagger
+![screenshot](https://raw.githubusercontent.com/suyog1pathak/service-catalog-go/main/docs/swagger.jpeg)
