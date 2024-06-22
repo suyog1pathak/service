@@ -1,0 +1,404 @@
+basePath: /
+definitions:
+  Components:
+    properties:
+      datastore:
+        type: boolean
+    type: object
+  GenericErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  GenericResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  HealthcheckResponse:
+    properties:
+      components:
+        $ref: '#/definitions/Components'
+      status:
+        type: string
+      statusCode:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+  Meta:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      totalPages:
+        type: integer
+      totalResults:
+        type: integer
+    type: object
+  ServiceModelDb:
+    properties:
+      describe:
+        type: string
+      isActive:
+        type: boolean
+      serviceName:
+        type: string
+      tags:
+        type: string
+    type: object
+  ServicePagination:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/ServiceResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/Meta'
+    type: object
+  ServiceResponse:
+    properties:
+      currentVersion:
+        type: integer
+      describe:
+        type: string
+      isActive:
+        type: boolean
+      serviceName:
+        type: string
+      tags:
+        type: string
+      totalVersion:
+        type: integer
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact: {}
+  description: services API
+  termsOfService: http://swagger.io/terms/
+  title: services API
+  version: "0.1"
+paths:
+  /api/v1/services:
+    get:
+      consumes:
+      - application/json
+      description: list and filter services with pagination
+      parameters:
+      - description: query to filter, service name only
+        example: Service1
+        in: query
+        name: query
+        type: string
+      - description: direction of sorting
+        enum:
+        - desc
+        - asc
+        in: query
+        name: dir
+        type: string
+      - description: page no
+        in: query
+        maximum: 1000
+        minimum: 1
+        name: page
+        type: integer
+      - description: sort by column name
+        enum:
+        - created_at
+        - updated_at
+        - version
+        in: query
+        name: sort
+        type: string
+      - description: page size
+        in: query
+        maximum: 10
+        minimum: 1
+        name: pagesize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ServicePagination'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: list and filter services with pagination
+      tags:
+      - services
+    post:
+      consumes:
+      - application/json
+      description: List services
+      parameters:
+      - description: Add Service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModelDb'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ServiceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: List services
+      tags:
+      - services
+  /api/v1/services/{name}:
+    get:
+      consumes:
+      - application/json
+      description: Get services by name
+      parameters:
+      - description: service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ServiceModelDb'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: Get services by name
+      tags:
+      - services
+    patch:
+      consumes:
+      - application/json
+      description: update service // create new version
+      parameters:
+      - description: service name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: update Service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModelDb'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ServiceResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: update service // create new version
+      tags:
+      - services
+  /api/v1/services/{name}/:
+    delete:
+      consumes:
+      - application/json
+      description: delete service
+      parameters:
+      - description: service name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/GenericResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: delete service
+      tags:
+      - services
+  /api/v1/services/{name}/{version}:
+    get:
+      consumes:
+      - application/json
+      description: Get service by version and name
+      parameters:
+      - description: service name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: version name
+        in: path
+        name: version
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ServiceModelDb'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: Get service by version and name
+      tags:
+      - services
+    patch:
+      consumes:
+      - application/json
+      description: update service version
+      parameters:
+      - description: service name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: version
+        in: path
+        name: version
+        required: true
+        type: string
+      - description: update Service
+        in: body
+        name: service
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModelDb'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ServiceModelDb'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/GenericErrorResponse'
+      summary: update service version
+      tags:
+      - services
+  /healthcheck:
+    get:
+      consumes:
+      - application/json
+      description: healthcheck
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+      summary: healthcheck
+      tags:
+      - healthcheck
+  /liveness:
+    get:
+      consumes:
+      - application/json
+      description: liveness
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+      summary: liveness
+      tags:
+      - healthcheck
+  /readiness:
+    get:
+      consumes:
+      - application/json
+      description: ReadinessCheck
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HealthcheckResponse'
+      summary: ReadinessCheck
+      tags:
+      - healthcheck
+swagger: "2.0"

@@ -1,0 +1,17 @@
+# database specific configurations.
+db:
+  user: ""
+  password: ""
+  host: ""
+  name: ""
+  port: 3306
+
+
+app:
+  # http port to listen, default is 8080
+  http_port: 8080
+
+  # main server is listening to the SIGTERM and SIGINT and will act accordingly,
+  # draining_period defined for how many seconds server will wait after getting any of these signals.
+  draining_period: 30
+  log_level: DEBUG
